@@ -131,6 +131,7 @@ puts "Text: "
 text = gets.chomp
 words = text.split(" ")
 frequencies = Hash.new(0)
+# Py: freq = dict().fromkeys(words, 0)
 
 words.each { |w|
   frequencies[w] += 1
@@ -138,7 +139,11 @@ words.each { |w|
 
 frequencies = frequencies.sort_by { |w, c| c}
 frequencies.reverse!
+# Py: freq = dict(sorted(freq.items(), key=lambda x: x[1], reverse=True))
 
 frequencies.each do |w, c|
   puts w + " " + c.to_s  # or String(c)
 end
+
+
+### 5th Lesson Notes: Blocks & Sorting ###
