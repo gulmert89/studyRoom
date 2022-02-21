@@ -95,7 +95,6 @@ family = {
     "Lisa" => "sister",
     "Maggie" => "sister"
 }
-
 friends.each { |x| puts "Friend #{x}" }
 family.each { |x, y| puts "#{x}: #{y}" }
 
@@ -104,7 +103,6 @@ s = [  # 2D array
     ["turkey", "cheddar"],
     ["roast beef", "gruyere"]
 ]
-
 s.each do |sub_array|
   sub_array.each { |item|
     print item, " "
@@ -121,7 +119,6 @@ secret_identities = {
   "Wonder Woman" => "Diana Prince",
   "Freakazoid" => "Dexter Douglas"
 }
-
 secret_identities.each do |hero_alias, real_id|
   puts "#{hero_alias}: #{real_id}"
 end
@@ -147,3 +144,47 @@ end
 
 
 ### 5th Lesson Notes: Blocks & Sorting ###
+def array_of_10
+  puts (1..10).to_a  # To array
+end
+array_of_10
+
+def what_up(greeting, *friends)  # "splat arguments"
+  friends.each { |friend| puts "#{greeting}, #{friend}!" }
+end
+what_up("What up", "Ian", "Zoe", "Zenas", "Eleanor")
+
+book_1 = "A Wrinkle in Time"
+book_2 = "A Brief History of Time"
+print book_1 <=> book_2  # Output: 1. 
+# This is called "Combined Comparison Operator". Outputs -1, 0, or 1.
+
+books = [
+  "Charlie and the Chocolate Factory",
+  "War and Peace",
+  "Utopia",
+  "A Brief History of Time",
+  "A Wrinkle in Time"
+]
+# To sort our books in ascending order, in-place
+puts "Ascending order:"
+books.sort! { |firstBook, secondBook| firstBook <=> secondBook }  # Loop block is unnecessary.
+puts books
+# Sort your books in descending order, in-place below
+puts "\nDescending order:"
+books.sort! do |firstBook, secondBook| secondBook <=> firstBook end
+print books
+
+# Fifth Project: Ordering Your Library
+def sorter(arr, rev=false)
+  unless rev
+    return arr.sort!
+  else
+    return arr.sort.reverse!
+  end
+end
+
+numbers = [3,7,2,5]
+puts sorter(numbers, true)
+
+## 6th Lesson: Hashes & Symbols
