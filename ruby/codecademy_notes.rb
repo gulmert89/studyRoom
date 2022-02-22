@@ -187,4 +187,202 @@ end
 numbers = [3,7,2,5]
 puts sorter(numbers, true)
 
+
 ## 6th Lesson: Hashes & Symbols
+puts "string".object_id  # 16346560
+puts "string".object_id  # 16346360
+puts "string".class      # String
+puts :symbol.object_id   # 802268
+puts :symbol.object_id   # 802268
+puts :symbol.class       # Symbol
+# Why symbols?
+# They’re immutable, meaning they can’t be changed once they’re created,
+# Only one copy of any symbol exists at a given time, so they save memory,
+# Symbol-as-keys are faster than strings-as-keys because of the above two reasons.
+
+:some_symbol.to_s  # ==> "some_symbol"
+"some_string".to_sym  # ==> :some_string
+"some_string".intern  # ==> :some_string
+
+strings = ["HTML", "CSS", "JavaScript", "Python", "Ruby"]
+symbols = []
+strings.each do |s|
+  symbols.push(s.to_sym)
+end
+puts symbols  # [:HTML, :CSS, :JavaScript, :Python, :Ruby]
+
+movies = {
+  the_matrix: "Made in 1999"  # the key is still a symbol
+}
+puts movies  # {:the_matrix=>"Made in 1999"}
+
+# Performance of String and Symbol
+require 'benchmark'
+string_AZ = Hash[("a".."z").to_a.zip((1..26).to_a)]
+symbol_AZ = Hash[(:a..:z).to_a.zip((1..26).to_a)]
+string_time = Benchmark.realtime do
+  100_000_000.times { string_AZ["r"] }
+end
+symbol_time = Benchmark.realtime do
+  100_000_000.times { symbol_AZ[:r] }
+end
+puts "String time: #{string_time} seconds."  # String time: 7.074 seconds.
+puts "Symbol time: #{symbol_time} seconds."  # Symbol time: 4.989 seconds.
+
+movie_ratings = {
+  memento: 3,
+  the_matrix: 5,
+  truman_show: 4,
+}
+good_movies = movie_ratings.select { |k, v| v > 3}
+puts good_movies  # {:the_matrix=>5, :truman_show=>4}
+
+good_movies.each_key do |k| puts k end
+good_movies.each_value do |v| puts v end
+
+# Sixth Project: A Night At The Movies
+movies = {fight_club: 5}
+puts "What would you like to do?"
+puts "-- Type 'add' to add a movie."
+puts "-- Type 'update' to update a movie."
+puts "-- Type 'display' to display all movies."
+puts "-- Type 'delete' to delete a movie."
+
+choice = gets.chomp
+case choice
+  when "add"
+    puts "Movie name:"
+    title = gets.chomp.to_sym
+    if movies[title].nil?
+      puts "Rating value:"
+      rating = gets.chomp.to_i
+      movies[title] = rating
+      puts "The movie '#{title}' is added."
+    else
+      puts "The movie has already added to the database."
+    end
+  when "update"
+    puts "Please provide the movie name to be updated:"
+    title = gets.chomp.to_sym
+    if movies[title].nil?
+      puts "The movie is not in the database. Please add it first."
+    else
+      puts "New rating value:"
+      updated_rating = gets.chomp.to_i
+      movies[title] = updated_rating
+      puts "The rating of the movie has been updated."
+      puts movies
+    end
+  when "display"
+    movies.each { |m, r| puts "#{m}: #{r}"}
+  when "delete"
+    puts "Which movie you would like to delete:"
+    title = gets.chomp.to_sym
+    if movies[title].nil?
+      puts "No such movie exist in the database. Try again."
+    else
+      movies.delete(title)
+      puts "The movie has been deleted from the database."
+    end
+  else
+    puts "Error!"
+end
+
+
+## 7th Lesson: Refactoring
+puts 3 < 4 ? "The condition is true." : "The condition is false."
+
+puts "Hello there!"
+greeting = gets.chomp
+case greeting
+  when "English" then puts "Hello!"
+  when "French" then puts "Bonjour!"
+  when "German" then puts "Guten Tag!"
+  when "Finnish" then puts "Haloo!"
+  else puts "I don't know that language!"
+end
+# Conditional Assignment:
+favorite_book = nil
+puts favorite_book
+favorite_book ||= "Cat's Cradle"
+puts favorite_book
+favorite_book ||= "Why's (Poignant) Guide to Ruby"
+puts favorite_book
+favorite_book = "Why's (Poignant) Guide to Ruby"
+puts favorite_book
+# Outputs:
+#  (nothing)
+# Cat's Cradle
+# Cat's Cradle
+# Why's (Poignant) Guide to Ruby
+
+# Implicit Return
+def multiple_of_three(n)
+  n % 3 == 0 ? "Yep!" : "Nope!"  # "return" is deleted!
+end
+puts multiple_of_three(5)  # Ruby’s methods will return the result of the last evaluated expression.
+
+# Short-circuit evaluation
+def a
+  puts "A was evaluated!"
+  return true
+end
+def b
+  puts "B was also evaluated!"
+  return true
+end
+puts a || b
+puts "------"
+puts a && b
+# Outputs: (This also holds for 'false && ...')
+# A was evaluated!
+# true
+# ------
+# A was evaluated!
+# B was also evaluated!
+# true
+
+"L".upto("P") {|l| print l + " "}  # L M N O P
+print "\n"
+10.downto(3) {|n| print n, " "}  # 10 9 8 7 6 5 4 3 
+
+[1, 2, 3].respond_to?(:push)  # true
+[1, 2, 3].respond_to?(:to_sym)  # false
+age = 26
+puts age.respond_to?(:next)  # true
+puts age.next  # 27
+
+# concatenation operator
+alphabet = ["a", "b", "c"]
+alphabet << "d"  # alphabet.push("d")
+
+caption = "A giraffe surrounded by "
+caption << "weezards!"  # caption += "weezards!"
+
+# Seventh Project: The Refactor Factory
+require 'prime'
+def first_n_primes(n)  # "return"s and condition blocks are simplified
+    "n must be an integer." unless n.is_a? Integer
+    "n must be greater than 0." if n <= 0
+    Prime.first n
+end
+puts first_n_primes(10)
+
+
+## 8th Lesson: Blocks, Procs, And Lambdas
+fibs = [1, 1, 2, 3, 5, 8, 13, 21, 34, 55]
+doubled_fibs = fibs.collect {|i| i*2}  # .collect! for inplace
+puts doubled_fibs  # [2, 2, 4, 6, 10, 16, 26, 42, 68, 110]
+# yield:
+def block_test
+  puts "We're in the method!"
+  puts "Yielding to the block..."
+  yield
+  puts "We're back in the method!"
+end
+block_test { puts ">>> We're in the block!" }
+# Outputs:
+# We're in the method!
+# Yielding to the block...
+# >>> We're in the block!
+# We're back in the method!
