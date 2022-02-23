@@ -69,7 +69,7 @@ loop {  # loop do ... end
   next if i % 2 == 1
   print "#{i}"
   break if i <= 0
-}0
+}
 
 # Third Project: Redacted!
 puts "Sentence: "
@@ -221,10 +221,10 @@ require 'benchmark'
 string_AZ = Hash[("a".."z").to_a.zip((1..26).to_a)]
 symbol_AZ = Hash[(:a..:z).to_a.zip((1..26).to_a)]
 string_time = Benchmark.realtime do
-  100_000_000.times { string_AZ["r"] }
+  10_000_000.times { string_AZ["r"] }
 end
 symbol_time = Benchmark.realtime do
-  100_000_000.times { symbol_AZ[:r] }
+  10_000_000.times { symbol_AZ[:r] }
 end
 puts "String time: #{string_time} seconds."  # String time: 7.074 seconds.
 puts "Symbol time: #{symbol_time} seconds."  # Symbol time: 4.989 seconds.
@@ -430,6 +430,7 @@ puts batman_ironman_lambda
 # Batman will win!
 # Iron Man will win!
 
+
 ### 9th Lesson: OOP 1
 class Computer
   $manufacturer = "Mango Computer, Inc."
@@ -453,8 +454,10 @@ puts "Manufacturer: #{$manufacturer}"  # Manufacturer: Mango Computer, Inc.
 # $manufacturer is global! We can get it directly.
 puts "Files: #{Computer.display_files}"  # Files: {:hello=>"Hello, world!"}
 # @@files belongs to the Computer class.
-class DerivedClass < BaseClass  # Inheritance syntax
-end
+
+# Inheritance syntax
+class BaseClass; end
+class DerivedClass < BaseClass; end
 # super
 class Message
   @@messages_sent = 0
@@ -472,6 +475,125 @@ class Email < Message
 end
 
 # Nineth Project: Virtual Computer
+class Machine
+  @@users = {}
+  def initialize(username, password)
+    @username = username
+    @password = password
+    @@users[username] = password
+    @files = {}
+  end
+  def create(filename)
+    time = Time.now
+    @files[filename] = time
+    puts "#{filename} was created by #{@username} at #{time}."
+  end
+  def Machine.get_users
+    @@users
+  end
+end
+my_machine = Machine.new("eric", 01234)
+your_machine = Machine.new("you", 56789)
+my_machine.create("groceries.txt")
+your_machine.create("todo.txt")
+puts "Users: #{Machine.get_users}"
+# groceries.txt was created by eric at 2022-02-23 13:46:19 +0000.
+# todo.txt was created by you at 2022-02-23 13:46:19 +0000.
+# Users: {"eric"=>668, "you"=>56789}
 
 
 ### 10th Lesson: OOP 2
+class Asd
+  public  # or private
+  def name
+    @name
+  end
+  def job=(new_job)  # convention. "hey, this method sets a value!"
+    @job = new_job
+  end
+end
+# attr_ for get/set
+class Person
+  attr_reader :name
+  attr_accessor :job  # reader + writer = accessor
+  # attr_writer :job
+  def initialize(name, job)
+    @name = name
+    @job = job
+  end
+end
+# Module: You can think of a module as a toolbox that contains a set methods and constants.
+# You can think of modules as being very much like classes,
+# only modules can’t create instances and can’t have subclasses.
+# They’re just used to store things!
+module Circle
+  PI = 3.141592653589793  
+  def Circle.area(radius)
+    PI * radius**2
+  end  
+end
+# '::' scope resolution operator
+puts Math::PI
+
+require "date"
+puts Date.today
+# "include" for Modules
+class Angle
+  include Math  # we want to use Math::cos but we don’t want to type Math::
+  attr_accessor :radians
+  def initialize(radians)
+    @radians = radians
+  end
+  def cosine
+    cos(@radians)
+  end
+end
+acute = Angle.new(1)
+puts acute.cosine  # 0.5403023058681398
+# "extend": This means that class itself can use the methods, as opposed to instances of the class.
+# ThePresent has a .now method that we'll extend to TheHereAnd
+module ThePresent
+  def now
+    puts "It's #{Time.new.hour > 12 ? Time.new.hour - 12 + 3 :\
+    Time.new.hour + 3}:#{Time.new.min} #{Time.new.hour > 12 ? 'PM' : 'AM'} (GMT+3)."
+  end
+end
+class TheHereAnd
+  extend ThePresent
+end
+TheHereAnd.now
+
+# Tenth Project: Banking on Ruby
+class Account
+  attr_reader :name
+  attr_reader :balance
+  def initialize(name, balance=100)
+    @name = name; @balance = balance; end
+  private
+  def pin
+    @pin = 1234
+  end
+  private
+  def pin_error
+    "Access denied: incorrect PIN."
+  end
+  public
+  def display_balance(pin_number)
+    puts pin_number == pin ? "Balance: $#{balance}." : pin_error
+  end
+  public
+  def withdraw(pin_number, amount)
+    @balance -= amount
+    if pin_number == pin
+      puts "Withdrew #{amount}. New balance: $#{@balance}."
+    else
+      puts pin_error
+    end
+  end
+end
+
+my_account = Account.new("Mert", 12_770_000)
+my_account.display_balance(1234)
+my_account.withdraw(1234, 70000)
+my_account.display_balance(1234)
+my_account.withdraw(4321, 500)
