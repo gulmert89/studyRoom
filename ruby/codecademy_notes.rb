@@ -4,7 +4,7 @@ The projects cover pretty much everything but probably not everything.
 So, be careful when a recap is needed!
 =end
 
-### 1st Lesson Notes: Introduction ###
+### 1st Lesson: Introduction
 # First Project: Putting the form in Formatter
 print "What's your first name? "
 first_name = gets.chomp
@@ -25,7 +25,7 @@ state.upcase!
 print "#{first_name} #{last_name} is from #{city.capitalize!}, #{state}."
 
 
-### 2nd Lesson Notes: Control Flow ###
+### 2nd Lesson: Control Flow
 test_1 = (true || false) || (false && true)  # should be true
 test_2 = (true && (3 < 4)) && (false || (0 == 0))  # should be true
 test_3 = (false || false) || !(true || false)  # should be false
@@ -52,7 +52,7 @@ else
 end
 
 
-### 3nd Lesson Notes: Looping ###
+### 3nd Lesson: Looping
 counter = 1
 until counter > 10
   puts counter
@@ -87,7 +87,7 @@ words.each do |w|
 end
 
 
-### 4th Lesson Notes: Arrays & Hashes ###
+### 4th Lesson: Arrays & Hashes
 friends = ["Milhouse", "Ralph", "Nelson", "Otto"]
 family = {
     "Homer" => "dad",
@@ -143,7 +143,7 @@ frequencies.each do |w, c|
 end
 
 
-### 5th Lesson Notes: Blocks & Sorting ###
+### 5th Lesson: Blocks & Sorting
 def array_of_10
   puts (1..10).to_a  # To array
 end
@@ -188,7 +188,7 @@ numbers = [3,7,2,5]
 puts sorter(numbers, true)
 
 
-## 6th Lesson: Hashes & Symbols
+### 6th Lesson: Hashes & Symbols
 puts "string".object_id  # 16346560
 puts "string".object_id  # 16346360
 puts "string".class      # String
@@ -289,7 +289,7 @@ case choice
 end
 
 
-## 7th Lesson: Refactoring
+### 7th Lesson: Refactoring
 puts 3 < 4 ? "The condition is true." : "The condition is false."
 
 puts "Hello there!"
@@ -369,20 +369,109 @@ end
 puts first_n_primes(10)
 
 
-## 8th Lesson: Blocks, Procs, And Lambdas
+### 8th Lesson: Blocks, Procs, And Lambdas
 fibs = [1, 1, 2, 3, 5, 8, 13, 21, 34, 55]
 doubled_fibs = fibs.collect {|i| i*2}  # .collect! for inplace
 puts doubled_fibs  # [2, 2, 4, 6, 10, 16, 26, 42, 68, 110]
 # yield:
-def block_test
-  puts "We're in the method!"
-  puts "Yielding to the block..."
-  yield
-  puts "We're back in the method!"
+def yield_name(name)
+  puts "In the method! Let's yield."
+  yield#("Jack")
+  puts "In between the yields!"
+  yield(name)
+  puts "Block complete! Back in the method."
 end
-block_test { puts ">>> We're in the block!" }
+yield_name("Mert") do |n| puts "I am #{n}." end
 # Outputs:
-# We're in the method!
-# Yielding to the block...
-# >>> We're in the block!
-# We're back in the method!
+# In the method! Let's yield.
+# I am .
+# In between the yields!
+# I am Mert.
+# Block complete! Back in the method.
+
+# Procs
+floats = [1.2, 3.45, 0.91, 7.727, 11.42, 482.911]
+round_down = Proc.new {|f| f.floor}
+round_up = Proc.new do |f| f.ceil end
+over_7 = Proc.new {|n| n >= 7}
+ints = floats.collect(&round_down)
+print ints, "\n"  # [1, 3, 0, 7, 11, 482]
+print floats.map!(&round_up)    # [2, 4, 1, 8, 12, 483]
+print floats.select(&over_7)  # [8, 12, 483]  # Note that the array is rounded up on the previous line.
+# Note: The & is used to convert the cube proc into a block (since .collect!
+# and .map! normally take a block). PS: collect & map are the same.
+hi = Proc.new {puts "Hello!"}
+hi.call
+# You can also convert symbols to procs using '&'
+numbers_array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+strings_array = numbers_array.map(&:to_s)
+# lambda
+def lambda_demo(a_lambda)
+  puts "I'm the method!"
+  a_lambda.call
+end
+lambda_demo(lambda { puts "I'm the lambda!" })
+# I'm the method!
+# I'm the lambda!
+# Lambda vs Proc: A lambda is just like a proc, only it cares about the number
+# of arguments it gets and it returns to its calling method rather than returning immediately.
+def batman_ironman_proc
+  victor = Proc.new { return "Batman will win!" }
+  victor.call
+  "Iron Man will win!"
+end
+puts batman_ironman_proc
+def batman_ironman_lambda
+  victor = lambda { return "Batman will win!" }
+  victor.call
+  "Iron Man will win!"
+end
+puts batman_ironman_lambda
+# Batman will win!
+# Iron Man will win!
+
+### 9th Lesson: OOP 1
+class Computer
+  $manufacturer = "Mango Computer, Inc."
+  @@files = {hello: "Hello, world!"}
+  def initialize(username, password)
+    @username = username
+    @password = password
+  end
+  def current_user
+    @username
+  end
+  def self.display_files
+    @@files
+  end
+end
+# Make a new Computer instance:
+hal = Computer.new("Dave", 12345)
+puts "Current user: #{hal.current_user}"  # Current user: Dave
+# @username belongs to the hal instance.
+puts "Manufacturer: #{$manufacturer}"  # Manufacturer: Mango Computer, Inc.
+# $manufacturer is global! We can get it directly.
+puts "Files: #{Computer.display_files}"  # Files: {:hello=>"Hello, world!"}
+# @@files belongs to the Computer class.
+class DerivedClass < BaseClass  # Inheritance syntax
+end
+# super
+class Message
+  @@messages_sent = 0
+  def initialize(from, to)
+    @from = from
+    @to = to
+    @@messages_sent += 1
+  end
+end
+my_message = Message.new("f", "t")
+class Email < Message
+  def initialize(from, to)
+    super
+  end
+end
+
+# Nineth Project: Virtual Computer
+
+
+### 10th Lesson: OOP 2
