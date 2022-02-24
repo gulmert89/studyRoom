@@ -1,3 +1,8 @@
+# Some unwanted folders
+opencv/img_processing/Computer-Vision-with-Python/
+opencv/img_processing/BBS669/
+ruby/rails_prj/tmp/cache/
+
 # VSCode Settings
 .vscode/
 
@@ -130,7 +135,3 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-
-# ...and lastly, some unwanted -hopefully temporary- folders
-opencv/img_processing/Computer-Vision-with-Python/
-opencv/img_processing/BBS669/
