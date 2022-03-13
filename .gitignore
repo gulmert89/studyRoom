@@ -2,6 +2,8 @@
 opencv/img_processing/Computer-Vision-with-Python/
 opencv/img_processing/BBS669/
 ruby/rails_prj/tmp/cache/
+other/js-demos
+# ^ this would be removed later.
 
 # VSCode Settings
 .vscode/
